@@ -24,17 +24,17 @@ jump-app-cicd:
 
 # Global variables
 global:
-  appsDomain: apps.cluster-4kh56.dynamic.redhatworkshops.io
+  appsDomain: apps.cluster-9tbkq.dynamic.redhatworkshops.io
   # Jump microservices settings
   apps:
     front-javascript:
       build: is
-      imagestream: nodejs:18-ubi8
+      imagestream: nodejs:20-ubi8
       imagestreamNamespace: openshift
       versions:
         - v1
       type: nodejs
-      gitRepo: https://github.com/acidonper/jump-app-typescrypt-react.git
+      gitRepo: https://github.com/nveces/jump-app-typescrypt-react.git
     back-golang:
       build: dockerfile
       versions:
