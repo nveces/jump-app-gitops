@@ -1,116 +1,59 @@
-# Chart variables
-jump-app-cicd:
+jump-app-micros:
   enabled: false
+
 jump-app-argocd:
   enabled: false
-jump-app-micros:
+
+jump-app-cicd:
   enabled: true
-  istio:
-    enabled: false
-    namespace: istio-system
-    mtls: true
-  cicd:
-    namespace: user01-jump-app-cicd
-  knative:
-    enabled: false
+  namespaceDev: <user_namespace>
+  namespacePre: mock-value-pre
+  namespacePro: mock-value-pro
+  namespaceGitOps: user02-gitops-argocd
+  functTestRepo: https://github.com/acidonper/jump-app-functional-tests.git
+  functTestRepoBranch: master
+  functTestMicro: front-javascript
+  pipeTypes:
+    - nodejs
+    - golang
+    - python
+    - java
+  gitBranchPro: master
+  gitBranchDev: develop
+  sa: tekton-deployments-admin
 
 # Global variables
 global:
-  appsDomain: apps.cluster-4kh56.dynamic.redhatworkshops.io
+  appsDomain: <openshift_apps_domain>
+  # Jump microservices settings
   apps:
     front-javascript:
-      imagetag: develop
-      multiVersions:
-        enabled: false
-      replicas: 1
-      envVars:
-        APP_REF_NAME: jump-app
-      containerPorts:
-        http:
-          containerPort: 3000
-          protocol: TCP
-      servicePorts:
-        http-8080:
-          port: 8080
-          protocol: TCP
-          targetPort: 3000
-      public: true
-      routeTargetPort: http-8080
-      backend: back-golang
+      build: is
+      imagestream: nodejs:18-ubi8
+      imagestreamNamespace: openshift
+      versions:
+        - v1
+      type: nodejs
+      gitRepo: https://github.com/nveces/jump-app-typescrypt-react.git
     back-golang:
-      imagetag: develop
-      multiVersions:
-        enabled: false
-      replicas: 1
-      envVars:
-        APP_REF_NAME: jump-app
-      containerPorts:
-        http:
-          containerPort: 8442
-          protocol: TCP
-      servicePorts:
-        http-8442:
-          port: 8442
-          protocol: TCP
-          targetPort: 8442
-      public: true
-      routeTargetPort: http-8442
-      frontSettings:
-        var: REACT_APP_GOLANG
-        port: 8442
+      build: dockerfile
+      versions:
+        - v1
+      gitRepo: https://github.com/acidonper/jump-app-golang.git
+      type: golang
     back-python:
-      imagetag: develop
-      multiVersions:
-        enabled: false
-      replicas: 1
-      envVars:
-        APP_REF_NAME: jump-app
-      containerPorts:
-        http:
-          containerPort: 8080
-          protocol: TCP
-      servicePorts:
-        http-8444:
-          port: 8444
-          protocol: TCP
-          targetPort: 8080
-      public: false
-      routeTargetPort: http-8444
-      frontSettings:
-        var: REACT_APP_PYTHON
-        port: 8444
+      build: is
+      imagestream: python:latest
+      imagestreamNamespace: openshift
+      versions:
+        - v1
+      gitRepo: https://github.com/acidonper/jump-app-python.git
+      type: python
     back-springboot:
-      imagetag: develop
-      multiVersions:
-        enabled: false
-      replicas: 1
-      envVars:
-        APP_REF_NAME: jump-app
-      containerPorts:
-        http:
-          containerPort: 8080
-          protocol: TCP
-        https:
-          containerPort: 8443
-          protocol: TCP
-        service:
-          containerPort: 8778
-          protocol: TCP
-      servicePorts:
-        http-8080:
-          port: 8080
-          protocol: TCP
-          targetPort: 8080
-        http-8443:
-          port: 8443
-          protocol: TCP
-          targetPort: 8443
-        http-8778:
-          port: 8778
-          protocol: TCP
-          targetPort: 8778
-      public: false
-      routeTargetPort: http-8443
-      frontSettings:
-        var: REACT_APP_SPRINGBOOT
-        port: 8443
+      build: is
+      imagestream: java:latest
+      imagestreamNamespace: openshift
+      versions:
+        - v1
+      gitRepo: https://github.com/nveces/jump-app-java-springboot.git
+      type: java
